@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Text,
   Image,
+  Easing,
+  Animated,
   TouchableOpacity,
   TouchableHighlight,
 } from 'react-native';
@@ -16,6 +18,27 @@ import TrackPlayer, {
 import songs from '../../data.json';
 
 const PlayerScreen = (props) => {
+  let rotateValueHolder = new Animated.Value(0);
+
+  const startImageRotateFunction = () => {
+    rotateValueHolder.setValue(0);
+    Animated.timing(rotateValueHolder, {
+      toValue: 1,
+      duration: 10000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start(() => startImageRotateFunction());
+  };
+
+  const RotateData = rotateValueHolder.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  useEffect(() => {
+    startImageRotateFunction();
+  });
+
   const playbackState = usePlaybackState();
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -120,8 +143,14 @@ const PlayerScreen = (props) => {
           shadowOpacity: 1,
           shadowRadius: 5,
         }}>
-        <Image
-          style={styles.image}
+        <Animated.Image
+          style={{
+            width: 200,
+            height: 200,
+            marginTop: 50,
+            borderRadius: 100,
+            transform: [{rotate: RotateData}],
+          }}
           source={{uri: songs[currentSongIndex].artwork}}
         />
       </DropShadow>
