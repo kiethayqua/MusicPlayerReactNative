@@ -16,7 +16,6 @@ import TrackPlayer, {
   usePlaybackState,
 } from 'react-native-track-player';
 import songs from '../../data.json';
-import ProgressBar from '../../components/ProgressBar';
 
 const PlayerScreen = (props) => {
   let rotateValueHolder = new Animated.Value(0);
@@ -159,7 +158,6 @@ const PlayerScreen = (props) => {
       <View style={styles.text}>
         <Text style={styles.singer}>{songs[currentSongIndex].artist}</Text>
         <Text style={styles.title}>{songs[currentSongIndex].title}</Text>
-        <ProgressBar style={{marginTop: 10}} />
       </View>
 
       <View style={styles.control}>
