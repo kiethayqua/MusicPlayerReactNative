@@ -40,7 +40,6 @@ const PlayerScreen = (props) => {
     startImageRotateFunction();
   });
 
-  const playbackState = usePlaybackState();
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   useEffect(() => {
@@ -59,49 +58,33 @@ const PlayerScreen = (props) => {
         Capability.SkipToPrevious,
       ],
     });
-  }, []);
 
-  useEffect(() => {
-    switch (playbackState) {
-      case 3:
-        setIsPlaying(true);
-        break;
-      case 2:
-        setIsPlaying(false);
-        break;
-      default:
-        setIsPlaying(true);
-        break;
-    }
-  }, [playbackState]);
+    TrackPlayer.addEventListener('playback-state', async ({state}) => {
+      console.log(state);
+      console.log('listenning play/pause');
+      switch (state) {
+        case 3:
+          setIsPlaying(true);
+          break;
+        case 2:
+          setIsPlaying(false);
+          break;
+        default:
+          setIsPlaying(false);
+          break;
+      }
+    });
 
-  // khi bai hat ket thuc chuyen bai
-  useEffect(() => {
     TrackPlayer.addEventListener('playback-track-changed', async () => {
       const indexSong = (await TrackPlayer.getCurrentTrack()) - 1;
       setCurrentSongIndex(indexSong);
     });
-  }, [currentSongIndex]);
 
-  const renderControl = () => {
-    if (isPlaying) {
-      return (
-        <TouchableHighlight
-          style={styles.playPauseBtn}
-          onPress={playPauseBtnClick}>
-          <FontAwesome name="pause" size={25} color={'white'} />
-        </TouchableHighlight>
-      );
-    } else {
-      return (
-        <TouchableHighlight
-          style={styles.playPauseBtn}
-          onPress={playPauseBtnClick}>
-          <FontAwesome name="play" size={25} color={'white'} />
-        </TouchableHighlight>
-      );
-    }
-  };
+    return () => {
+      console.log('cleaned');
+      TrackPlayer.destroy();
+    };
+  }, []);
 
   const playPauseBtnClick = async () => {
     console.log('click');
@@ -170,7 +153,19 @@ const PlayerScreen = (props) => {
         <TouchableOpacity style={styles.forwardBtn} onPress={nextBtnClick}>
           <FontAwesome name="fast-forward" size={20} color="#aaa" />
         </TouchableOpacity>
-        {renderControl()}
+        {isPlaying ? (
+          <TouchableHighlight
+            style={styles.playPauseBtn}
+            onPress={playPauseBtnClick}>
+            <FontAwesome name="pause" size={25} color={'white'} />
+          </TouchableHighlight>
+        ) : (
+          <TouchableHighlight
+            style={styles.playPauseBtn}
+            onPress={playPauseBtnClick}>
+            <FontAwesome name="play" size={25} color={'white'} />
+          </TouchableHighlight>
+        )}
       </View>
     </View>
   );
