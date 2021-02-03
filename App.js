@@ -36,6 +36,7 @@ const App = () => {
                 title: title,
                 artist: author,
                 url: path,
+                artwork: require('MusicPlayer/src/images/download.jpeg'),
               };
               listSong.push(objChangeKey);
             });

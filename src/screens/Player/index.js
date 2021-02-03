@@ -124,10 +124,7 @@ const PlayerScreen = ({songs}) => {
             borderRadius: 100,
             transform: [{rotate: RotateData}],
           }}
-          source={{
-            uri:
-              'https://i.pinimg.com/originals/5b/e8/4f/5be84f684cb91a9783116073ba0d740a.jpg',
-          }}
+          source={songs[currentSongIndex].artwork}
         />
       </DropShadow>
 
