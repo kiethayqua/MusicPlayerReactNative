@@ -41,7 +41,7 @@ const PlayerScreen = ({songs}) => {
 
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const changeTrackEvent = useRef(TrackPlayer).current;
+  const changeEvents = useRef(TrackPlayer).current;
   useEffect(() => {
     TrackPlayer.setupPlayer().then(async () => {
       await TrackPlayer.reset();
@@ -59,7 +59,7 @@ const PlayerScreen = ({songs}) => {
       ],
     });
 
-    changeTrackEvent.addEventListener('playback-track-changed', async () => {
+    changeEvents.addEventListener('playback-track-changed', async () => {
       const idSong = await TrackPlayer.getCurrentTrack();
       const indexSong = songs.findIndex(({id}) => {
         return id == idSong;
@@ -67,9 +67,23 @@ const PlayerScreen = ({songs}) => {
       setCurrentSongIndex(indexSong);
     });
 
+    changeEvents.addEventListener('playback-state', ({state}) => {
+      switch (state) {
+        case 3:
+          setIsPlaying(true);
+          break;
+        case 2:
+          setIsPlaying(false);
+          break;
+        default:
+          setIsPlaying(false);
+          break;
+      }
+    });
+
     return () => {
       TrackPlayer.destroy();
-      changeTrackEvent.remove();
+      changeEvents.remove();
     };
   }, []);
 
