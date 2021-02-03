@@ -15,12 +15,11 @@ import TrackPlayer, {
   Capability,
   usePlaybackState,
 } from 'react-native-track-player';
-import songs from '../../data.json';
+//import songs from '../../data.json';
 import ProgressBar from '../../components/ProgressBar';
 
-const PlayerScreen = (props) => {
+const PlayerScreen = ({songs}) => {
   let rotateValueHolder = new Animated.Value(0);
-
   const startImageRotateFunction = () => {
     rotateValueHolder.setValue(0);
     Animated.timing(rotateValueHolder, {
@@ -42,6 +41,7 @@ const PlayerScreen = (props) => {
 
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const changeTrackEvent = useRef(TrackPlayer).current;
   useEffect(() => {
     TrackPlayer.setupPlayer().then(async () => {
       await TrackPlayer.reset();
@@ -50,7 +50,7 @@ const PlayerScreen = (props) => {
     });
 
     TrackPlayer.updateOptions({
-      stopWithApp: false,
+      stopWithApp: true,
       capabilities: [
         Capability.Play,
         Capability.Pause,
@@ -59,30 +59,17 @@ const PlayerScreen = (props) => {
       ],
     });
 
-    TrackPlayer.addEventListener('playback-state', async ({state}) => {
-      console.log(state);
-      console.log('listenning play/pause');
-      switch (state) {
-        case 3:
-          setIsPlaying(true);
-          break;
-        case 2:
-          setIsPlaying(false);
-          break;
-        default:
-          setIsPlaying(false);
-          break;
-      }
-    });
-
-    TrackPlayer.addEventListener('playback-track-changed', async () => {
-      const indexSong = (await TrackPlayer.getCurrentTrack()) - 1;
+    changeTrackEvent.addEventListener('playback-track-changed', async () => {
+      const idSong = await TrackPlayer.getCurrentTrack();
+      const indexSong = songs.findIndex(({id}) => {
+        return id == idSong;
+      });
       setCurrentSongIndex(indexSong);
     });
 
     return () => {
-      console.log('cleaned');
       TrackPlayer.destroy();
+      changeTrackEvent.remove();
     };
   }, []);
 
@@ -98,21 +85,23 @@ const PlayerScreen = (props) => {
   };
 
   const nextBtnClick = async () => {
-    const indexSong = (await TrackPlayer.getCurrentTrack()) - 1;
+    const idSong = await TrackPlayer.getCurrentTrack();
+    const indexSong = songs.findIndex(({id}) => {
+      return id == idSong;
+    });
     if (indexSong === songs.length - 1) return;
-    TrackPlayer.skipToNext();
+    await TrackPlayer.skipToNext();
     setCurrentSongIndex(indexSong + 1);
-
-    await TrackPlayer.play();
   };
 
   const prevBtnClick = async () => {
-    const indexSong = (await TrackPlayer.getCurrentTrack()) - 1;
+    const idSong = await TrackPlayer.getCurrentTrack();
+    const indexSong = songs.findIndex(({id}) => {
+      return id == idSong;
+    });
     if (indexSong === 0) return;
-    TrackPlayer.skipToPrevious();
+    await TrackPlayer.skipToPrevious();
     setCurrentSongIndex(indexSong - 1);
-
-    await TrackPlayer.play();
   };
 
   return (
@@ -135,7 +124,7 @@ const PlayerScreen = (props) => {
             borderRadius: 100,
             transform: [{rotate: RotateData}],
           }}
-          source={{uri: songs[currentSongIndex].artwork}}
+          source={require('MusicPlayer/src/images/download.jpeg')}
         />
       </DropShadow>
 

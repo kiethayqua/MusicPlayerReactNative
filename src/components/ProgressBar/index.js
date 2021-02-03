@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Text, View} from 'react-native';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {useProgress} from 'react-native-track-player';
 import styles from './styles';
 
 const ProgressBar = (props) => {
-  const {duration, position, positionBuffered} = useProgress();
+  const {duration, position} = useProgress();
+  const copyDuration = useRef(duration).current;
 
   const formatTime = (secs) => {
     secs = Math.ceil(secs);
@@ -18,8 +19,8 @@ const ProgressBar = (props) => {
     return `${minutes}:${seconds}`;
   };
 
-  const handleChangeValue = (value) => {
-    TrackPlayer.seekTo(value);
+  const handleChangeValue = async (value) => {
+    await TrackPlayer.seekTo(value);
   };
 
   return (
