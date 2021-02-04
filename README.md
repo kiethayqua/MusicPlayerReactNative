@@ -14,4 +14,10 @@
 
 ### demo:
 
-![alt Demo](https://media.giphy.com/media/DzatQi2d9oEGw3dhlx/giphy.gif)
+![alt Demo](https://i.ibb.co/NrzkhS7/1.png)
+
+![alt Demo](https://i.ibb.co/3YVdzj7/2.png)
+
+![alt Demo](https://i.ibb.co/MCD3Szb/3.png)
+
+![alt Demo](https://i.ibb.co/W3ms5SB/4.png)
