@@ -1,9 +1,18 @@
+import 'react-native-gesture-handler';
 import React, {useState, useEffect, useRef} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
 import {Text, View} from 'react-native';
 import PlayerScreen from './src/screens/Player';
 import MusicFiles from 'react-native-get-music-files';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import TrackPlayer from 'react-native-track-player';
 
 import {requestMultiple, PERMISSIONS} from 'react-native-permissions';
+import ListSongScreen from './src/screens/ListSong';
+
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
+const Tab = createBottomTabNavigator();
 
 const App = () => {
   const [songs, setSongs] = useState(null);
@@ -42,19 +51,58 @@ const App = () => {
             });
             setSongs(listSong);
             setLoading(false);
+
+            TrackPlayer.setupPlayer().then(async () => {
+              await TrackPlayer.reset();
+              await TrackPlayer.add(listSong);
+              //await TrackPlayer.play();
+            });
           })
           .catch((error) => {
             console.log(error);
           });
       },
     );
+    return () => {
+      TrackPlayer.destroy();
+    };
   }, []);
 
   return (
-    <View style={{flex: 1, alignItems: 'center'}}>
-      {console.log(songs)}
-      {loading ? <Text>Loading...</Text> : <PlayerScreen songs={songs} />}
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        tabBarOptions={{
+          activeTintColor: 'rgb(232, 50, 60)',
+        }}>
+        <Tab.Screen
+          name="ListSong"
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons
+                name="playlist-music"
+                color={color}
+                size={size}
+              />
+            ),
+          }}>
+          {() =>
+            loading ? <Text>Loading...</Text> : <ListSongScreen songs={songs} />
+          }
+        </Tab.Screen>
+        <Tab.Screen
+          name="Player"
+          options={{
+            tabBarLabel: 'Player',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="music" color={color} size={size} />
+            ),
+          }}>
+          {() =>
+            loading ? <Text>Loading...</Text> : <PlayerScreen songs={songs} />
+          }
+        </Tab.Screen>
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 };
 
