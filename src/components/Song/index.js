@@ -27,8 +27,10 @@ const Song = ({song}) => {
       }
     });
 
-    changeEvents.addEventListener('playback-track-changed', () => {
+    changeEvents.addEventListener('playback-track-changed', async () => {
       setIsPlaying(false);
+      await TrackPlayer.pause();
+      await TrackPlayer.play();
     });
 
     return () => {
