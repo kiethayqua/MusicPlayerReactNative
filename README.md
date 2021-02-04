@@ -14,10 +14,8 @@
 
 ### demo:
 
-![alt Demo](https://i.ibb.co/NrzkhS7/1.png)
+![alt Demo](https://i.ibb.co/4WTh0gP/Blue-Stacks-2021-02-04-16-36-55.png)
 
-![alt Demo](https://i.ibb.co/3YVdzj7/2.png)
+![alt Demo](https://i.ibb.co/1Z3P5wH/Blue-Stacks-2021-02-04-16-37-54.png)
 
-![alt Demo](https://i.ibb.co/MCD3Szb/3.png)
-
-![alt Demo](https://i.ibb.co/W3ms5SB/4.png)
+![alt Demo](https://i.ibb.co/Zx0NzKf/Blue-Stacks-2021-02-04-16-38-14.png)
