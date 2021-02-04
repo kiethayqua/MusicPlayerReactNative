@@ -11,6 +11,7 @@ import {requestMultiple, PERMISSIONS} from 'react-native-permissions';
 import ListSongScreen from './src/screens/ListSong';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,16 +39,31 @@ const App = () => {
         })
           .then((tracks) => {
             if (tracks === 'Something get wrong with musicCursor') return;
+            console.log(tracks);
+
             const listSong = [];
-            tracks.map(({id, title, author, path}) => {
-              const objChangeKey = {
-                id: id,
-                title: title,
-                artist: author,
-                url: path,
-                artwork: require('MusicPlayer/src/images/download.jpeg'),
-              };
-              listSong.push(objChangeKey);
+            tracks.map(({id, title, author, path, cover}) => {
+              if (cover) {
+                RNFetchBlob.fs.readFile(cover, 'base64').then((data) => {
+                  const objChangeKey = {
+                    id: id,
+                    title: title,
+                    artist: author,
+                    url: path,
+                    artwork: {uri: 'data:image/jpg;base64,' + data},
+                  };
+                  listSong.push(objChangeKey);
+                });
+              } else {
+                const objChangeKey = {
+                  id: id,
+                  title: title,
+                  artist: author,
+                  url: path,
+                  artwork: require('MusicPlayer/src/images/download.jpeg'),
+                };
+                listSong.push(objChangeKey);
+              }
             });
             setSongs(listSong);
             setLoading(false);
