@@ -43,12 +43,6 @@ const PlayerScreen = ({songs}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const changeEvents = useRef(TrackPlayer).current;
   useEffect(() => {
-    TrackPlayer.setupPlayer().then(async () => {
-      await TrackPlayer.reset();
-      await TrackPlayer.add(songs);
-      //await TrackPlayer.play();
-    });
-
     TrackPlayer.updateOptions({
       stopWithApp: true,
       capabilities: [
@@ -82,7 +76,6 @@ const PlayerScreen = ({songs}) => {
     });
 
     return () => {
-      TrackPlayer.destroy();
       changeEvents.remove();
     };
   }, []);
